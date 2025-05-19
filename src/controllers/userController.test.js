@@ -34,5 +34,18 @@ describe('User controller', () => {
         { id: 2, username: 'Yad' },
       ]);
     });
+
+    it('should return 404 status code if no users exist', async () => {
+      const req = mockReq({});
+      const res = mockRes();
+      const error = { error: 'Not Found', message: 'No users found' };
+      userModel.getAllUsers.mockReturnValue([]);
+
+      await getUsers(req, res);
+
+      expect(userModel.getAllUsers).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith(error);
+    });
   });
 });
