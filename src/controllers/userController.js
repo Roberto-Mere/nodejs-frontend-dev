@@ -1,4 +1,4 @@
-import { getAllUsers, createUser } from '../models/users.js';
+import { getAllUsers, createUser, findUser } from '../models/users.js';
 import asyncHandler from 'express-async-handler';
 
 export const getUsers = asyncHandler(async (req, res) => {
@@ -15,9 +15,17 @@ export const getUsers = asyncHandler(async (req, res) => {
 export const postUser = asyncHandler(async (req, res) => {
   const username = req.body.username;
 
-  const newUser = await createUser();
+  const existing = await findUser('username', username);
+
+  if (existing) {
+    res
+      .status(409)
+      .json({ error: 'Conflict', message: 'Username already exists' });
+
+    return;
+  }
+
+  const newUser = await createUser(username);
 
   res.status(201).json(newUser);
-
-  return;
 });
