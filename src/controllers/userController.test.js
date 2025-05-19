@@ -2,10 +2,11 @@ import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('../models/users.js', () => ({
   getAllUsers: jest.fn(),
+  createUser: jest.fn(),
 }));
 
 const userModel = await import('../models/users.js');
-const { getUsers } = await import('../controllers/userController.js');
+const { getUsers, postUser } = await import('../controllers/userController.js');
 
 const mockReq = (body) => ({ body });
 const mockRes = () => {
@@ -16,7 +17,7 @@ const mockRes = () => {
 };
 
 describe('User controller', () => {
-  describe('getUsers', () => {
+  describe('Get all users', () => {
     it('should return array of users and 200 status code', async () => {
       const req = mockReq({});
       const res = mockRes();
@@ -46,6 +47,20 @@ describe('User controller', () => {
       expect(userModel.getAllUsers).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('Create new user', () => {
+    it('should return created user and 201 status code', async () => {
+      const req = mockReq({ username: 'Rog' });
+      const res = mockRes();
+      userModel.createUser.mockReturnValue({ id: 1, username: 'Rog' });
+
+      await postUser(req, res);
+
+      expect(userModel.createUser).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({ id: 1, username: 'Rog' });
     });
   });
 });

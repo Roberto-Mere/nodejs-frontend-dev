@@ -1,4 +1,4 @@
-import { getAllUsers } from '../models/users.js';
+import { getAllUsers, createUser } from '../models/users.js';
 import asyncHandler from 'express-async-handler';
 
 export const getUsers = asyncHandler(async (req, res) => {
@@ -10,4 +10,14 @@ export const getUsers = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json(users);
+});
+
+export const postUser = asyncHandler(async (req, res) => {
+  const username = req.body.username;
+
+  const newUser = await createUser();
+
+  res.status(201).json(newUser);
+
+  return;
 });

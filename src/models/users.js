@@ -10,7 +10,11 @@ export async function getAllUsers() {
 
 export async function createUser(username) {
   try {
-    await db.run('INSERT INTO users (username) VALUES (?)', [username]);
+    const result = await db.run('INSERT INTO users (username) VALUES (?)', [
+      username,
+    ]);
+
+    return { id: result.lastID, username };
   } catch (error) {
     throw new Error('Failed to create user');
   }
