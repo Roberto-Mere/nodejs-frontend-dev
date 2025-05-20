@@ -7,7 +7,7 @@ jest.unstable_mockModule('../models/users.js', () => ({
   findUser: jest.fn(),
 }));
 
-const mockReq = (body, params) => ({ body, params });
+const mockReq = (body, params, query) => ({ body, params, query });
 const mockRes = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
@@ -71,6 +71,41 @@ describe('Exercise controller', () => {
       expect(exerciseModel.getUserExercises).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith(error);
+    });
+
+    it('should filter logs based on date using from and to query params', async () => {
+      const req = mockReq(
+        {},
+        { id: 1 },
+        { from: '2025-01-01', to: '2026-01-01' }
+      );
+      const res = mockRes();
+      const user = { id: 1, username: 'Rog' };
+      const logs = [];
+      exerciseModel.getUserExercises.mockReturnValue(logs);
+      userModel.findUser.mockReturnValue(user);
+
+      await getUserLogs(req, res);
+
+      expect(exerciseModel.getUserExercises).toHaveBeenCalledWith(user.id, {
+        from: '2025-01-01',
+        to: '2026-01-01',
+      });
+    });
+
+    it('should filter logs based on date using from and to query params', async () => {
+      const req = mockReq({}, { id: 1 }, { limit: 5 });
+      const res = mockRes();
+      const user = { id: 1, username: 'Rog' };
+      const logs = [];
+      exerciseModel.getUserExercises.mockReturnValue(logs);
+      userModel.findUser.mockReturnValue(user);
+
+      await getUserLogs(req, res);
+
+      expect(exerciseModel.getUserExercises).toHaveBeenCalledWith(user.id, {
+        limit: 5,
+      });
     });
   });
 });

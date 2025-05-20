@@ -4,6 +4,7 @@ import { findUser } from '../models/users.js';
 
 export const getUserLogs = asyncHandler(async (req, res) => {
   const userId = req.params.id;
+  const filters = req.query;
   const user = await findUser('id', userId);
 
   if (!user) {
@@ -12,7 +13,7 @@ export const getUserLogs = asyncHandler(async (req, res) => {
     return;
   }
 
-  const userLogs = await getUserExercises(userId);
+  const userLogs = await getUserExercises(userId, filters);
 
   res.status(200).json({ ...user, logs: userLogs, count: userLogs.length });
 });
