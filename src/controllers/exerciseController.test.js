@@ -58,5 +58,19 @@ describe('Exercise controller', () => {
         count: logs.length,
       });
     });
+
+    it('should return 404 status code if user does not exist', async () => {
+      const req = mockReq({}, { id: 2 });
+      const res = mockRes();
+      const user = undefined;
+      const error = { error: 'Not Found', message: 'User not found' };
+      userModel.findUser.mockReturnValue(user);
+
+      await getUserLogs(req, res);
+
+      expect(exerciseModel.getUserExercises).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith(error);
+    });
   });
 });
