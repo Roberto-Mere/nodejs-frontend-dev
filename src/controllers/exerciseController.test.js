@@ -3,6 +3,7 @@ import { jest } from '@jest/globals';
 jest.unstable_mockModule('../models/exercises.js', () => ({
   getUserExercises: jest.fn(),
   getUserExerciseCount: jest.fn(),
+  createExercise: jest.fn(),
 }));
 jest.unstable_mockModule('../models/users.js', () => ({
   findUser: jest.fn(),
@@ -23,7 +24,9 @@ beforeEach(async () => {
 
   exerciseModel = await import('../models/exercises.js');
   userModel = await import('../models/users.js');
-  ({ getUserLogs } = await import('../controllers/exerciseController.js'));
+  ({ getUserLogs, postExercise } = await import(
+    '../controllers/exerciseController.js'
+  ));
 });
 
 describe('Exercise controller', () => {
@@ -105,6 +108,32 @@ describe('Exercise controller', () => {
 
       expect(exerciseModel.getUserExercises).toHaveBeenCalledWith(user.id, {
         limit: 5,
+      });
+    });
+  });
+
+  describe('Create user exercise', () => {
+    it('should return created exercise objcet and 200 status code', async () => {
+      const userId = 1;
+      const exerciseId = 1;
+      const exerciseData = {
+        description: 'First exercise',
+        duration: 30,
+        date: '2025-01-01',
+      };
+      const req = mockReq(exerciseData, { id: userId });
+      const res = mockRes();
+
+      exerciseModel.createExercise.mockReturnValue(exerciseId);
+
+      await postExercise(req, res);
+
+      expect(exerciseModel.createExercise).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        userId,
+        exerciseId,
+        ...exerciseData,
       });
     });
   });
