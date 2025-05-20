@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('../models/exercises.js', () => ({
   getUserExercises: jest.fn(),
+  getUserExerciseCount: jest.fn(),
 }));
 jest.unstable_mockModule('../models/users.js', () => ({
   findUser: jest.fn(),
@@ -31,6 +32,7 @@ describe('Exercise controller', () => {
       const req = mockReq({}, { id: 1 });
       const res = mockRes();
       const user = { id: 1, username: 'Rog' };
+      const count = 2;
       const logs = [
         {
           id: 1,
@@ -45,7 +47,9 @@ describe('Exercise controller', () => {
           date: '2025-05-19',
         },
       ];
+
       exerciseModel.getUserExercises.mockReturnValue(logs);
+      exerciseModel.getUserExerciseCount.mockReturnValue(count);
       userModel.findUser.mockReturnValue(user);
 
       await getUserLogs(req, res);
@@ -55,7 +59,7 @@ describe('Exercise controller', () => {
       expect(res.json).toHaveBeenCalledWith({
         ...user,
         logs,
-        count: logs.length,
+        count,
       });
     });
 
@@ -81,8 +85,6 @@ describe('Exercise controller', () => {
       );
       const res = mockRes();
       const user = { id: 1, username: 'Rog' };
-      const logs = [];
-      exerciseModel.getUserExercises.mockReturnValue(logs);
       userModel.findUser.mockReturnValue(user);
 
       await getUserLogs(req, res);
@@ -97,8 +99,6 @@ describe('Exercise controller', () => {
       const req = mockReq({}, { id: 1 }, { limit: 5 });
       const res = mockRes();
       const user = { id: 1, username: 'Rog' };
-      const logs = [];
-      exerciseModel.getUserExercises.mockReturnValue(logs);
       userModel.findUser.mockReturnValue(user);
 
       await getUserLogs(req, res);

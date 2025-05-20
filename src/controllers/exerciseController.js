@@ -1,4 +1,4 @@
-import { getUserExercises } from '../models/exercises.js';
+import { getUserExerciseCount, getUserExercises } from '../models/exercises.js';
 import asyncHandler from 'express-async-handler';
 import { findUser } from '../models/users.js';
 
@@ -14,6 +14,7 @@ export const getUserLogs = asyncHandler(async (req, res) => {
   }
 
   const userLogs = await getUserExercises(userId, filters);
+  const count = await getUserExerciseCount(userId);
 
-  res.status(200).json({ ...user, logs: userLogs, count: userLogs.length });
+  res.status(200).json({ ...user, logs: userLogs, count });
 });
