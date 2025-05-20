@@ -40,8 +40,15 @@ export async function getUserExerciseCount(userId) {
   }
 }
 
-// export async function createExercise(userId) {
-//   const db = getDb();
+export async function createExercise(description, duration, date, userId) {
+  try {
+    const result = db.run(
+      'INSERT INTO exercise (description, duration, date, userId) VALUES (?, ?, ?, ?)',
+      [description, duration, date, userId]
+    );
 
-//   return await db.run('INSERT INTO exercise (username) VALUES (?)', [username]);
-// }
+    return result.lastID;
+  } catch (error) {
+    throw new Error('Failed to create user exercise count');
+  }
+}
