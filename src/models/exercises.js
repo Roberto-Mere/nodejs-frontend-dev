@@ -44,7 +44,7 @@ export async function getUserExerciseCount(userId) {
 
 export async function createExercise(description, duration, date, userId) {
   try {
-    const result = db.run(
+    const result = await db.run(
       'INSERT INTO exercises (description, duration, date, userId) VALUES (?, ?, ?, ?)',
       [description, duration, date, userId]
     );
