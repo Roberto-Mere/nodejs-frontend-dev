@@ -27,7 +27,20 @@ export const postExercise = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const { description, duration, date } = req.body;
 
-  const newExerciseId = await createExercise(description, duration, date);
+  const user = await findUser('id', userId);
+
+  if (!user) {
+    res.status(404).json({ error: 'Not Found', message: 'User not found' });
+
+    return;
+  }
+
+  const newExerciseId = await createExercise(
+    description,
+    duration,
+    date,
+    userId
+  );
 
   res.status(200).json({
     userId,

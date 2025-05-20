@@ -123,7 +123,8 @@ describe('Exercise controller', () => {
       };
       const req = mockReq(exerciseData, { id: userId });
       const res = mockRes();
-
+      const user = { id: 1, username: 'Rog' };
+      userModel.findUser.mockResolvedValue(user);
       exerciseModel.createExercise.mockReturnValue(exerciseId);
 
       await postExercise(req, res);
@@ -136,5 +137,28 @@ describe('Exercise controller', () => {
         ...exerciseData,
       });
     });
+
+    it('should return 404 status code if user does not exist', async () => {
+      const exerciseId = 1;
+      const exerciseData = {
+        description: 'First exercise',
+        duration: 30,
+        date: '2025-01-01',
+      };
+      const req = mockReq(exerciseData, { id: 2 });
+      const res = mockRes();
+      const user = undefined;
+      const error = { error: 'Not Found', message: 'User not found' };
+      userModel.findUser.mockResolvedValue(user);
+      exerciseModel.createExercise.mockReturnValue(exerciseId);
+
+      await postExercise(req, res);
+
+      expect(exerciseModel.createExercise).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith(error);
+    });
+
+    it.todo('should create exercise when no date is provided');
   });
 });
