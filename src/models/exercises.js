@@ -2,25 +2,41 @@ import { db } from '../db/db.js';
 
 export async function getUserExercises(userId, filters) {
   try {
-    let query = 'SELECT * FROM exercises WHERE userId = ?';
     const queryParams = [userId];
+    const clauses = { where: ['userId = ?'], limit: '', orderBy: '' };
 
     if (filters.from) {
-      query = `${query} AND date >= ?`;
+      clauses.where.push('date >= ?');
+      clauses.orderBy = ' ORDER BY date';
       queryParams.push(filters.from);
     }
     if (filters.to) {
-      query = `${query} AND date <= ?`;
+      clauses.where.push('date <= ?');
       queryParams.push(filters.to);
     }
     if (filters.limit) {
-      query = `${query} LIMIT ?`;
+      clauses.limit = ' LIMIT ?';
       queryParams.push(filters.limit);
     }
+
+    const query = `SELECT * FROM exercises WHERE ${clauses.where.join(
+      ' AND '
+    )}${clauses.orderBy}${clauses.limit}`;
 
     return await db.all(query, queryParams);
   } catch (error) {
     throw new Error('Failed to fetch user exercise logs');
+  }
+}
+
+export async function getUserExerciseCount(userId) {
+  try {
+    return await db.get(
+      'SELECT COUNT(*) AS count FROM exercises WHERE userId = ?',
+      userId
+    );
+  } catch (error) {
+    throw new Error('Failed to fetch user exercise count');
   }
 }
 
