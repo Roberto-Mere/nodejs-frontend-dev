@@ -13,6 +13,10 @@ export async function getUserExercises(userId, filters) {
       query = `${query} AND date <= ?`;
       queryParams.push(filters.to);
     }
+    if (filters.limit) {
+      query = `${query} LIMIT ?`;
+      queryParams.push(filters.limit);
+    }
 
     return await db.all(query, queryParams);
   } catch (error) {
