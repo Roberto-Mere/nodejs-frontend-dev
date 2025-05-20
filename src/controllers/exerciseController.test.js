@@ -98,7 +98,7 @@ describe('Exercise controller', () => {
       });
     });
 
-    it('should filter logs based on date using from and to query params', async () => {
+    it('should filter logs based on date using limit param', async () => {
       const req = mockReq({}, { id: 1 }, { limit: 5 });
       const res = mockRes();
       const user = { id: 1, username: 'Rog' };
@@ -159,6 +159,30 @@ describe('Exercise controller', () => {
       expect(res.json).toHaveBeenCalledWith(error);
     });
 
-    it.todo('should create exercise when no date is provided');
+    it('should create exercise when no date is provided', async () => {
+      const userId = 1;
+      const exerciseId = 1;
+      const exerciseData = {
+        description: 'First exercise',
+        duration: 30,
+      };
+      const today = new Date(Date.now()).toISOString().slice(0, 10);
+      const req = mockReq(exerciseData, { id: userId });
+      const res = mockRes();
+      const user = { id: 1, username: 'Rog' };
+      userModel.findUser.mockResolvedValue(user);
+      exerciseModel.createExercise.mockReturnValue(exerciseId);
+
+      await postExercise(req, res);
+
+      expect(exerciseModel.createExercise).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        userId,
+        exerciseId,
+        ...exerciseData,
+        date: today,
+      });
+    });
   });
 });
