@@ -4,6 +4,7 @@ export async function getAllUsers() {
   try {
     return await db.all('SELECT * FROM users', []);
   } catch (error) {
+    console.log(error);
     throw new Error('Failed to fetch users');
   }
 }
@@ -12,6 +13,7 @@ export async function findUser(field, value) {
   try {
     return await db.get(`SELECT * FROM users WHERE ${field}  = ?`, [value]);
   } catch (error) {
+    console.log(error);
     throw new Error('Failed to find user');
   }
 }
@@ -24,6 +26,7 @@ export async function createUser(username) {
 
     return { id: result.lastID, username };
   } catch (error) {
+    console.log(error);
     throw new Error('Failed to create user');
   }
 }
