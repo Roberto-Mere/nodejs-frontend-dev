@@ -32,10 +32,12 @@ export async function getUserExercises(userId, filters) {
 
 export async function getUserExerciseCount(userId) {
   try {
-    return await db.get(
+    const response = await db.get(
       'SELECT COUNT(*) AS count FROM exercises WHERE userId = ?',
       userId
     );
+
+    return response.count;
   } catch (error) {
     console.log(error);
     throw new Error('Failed to fetch user exercise count');
