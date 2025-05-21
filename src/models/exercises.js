@@ -19,7 +19,7 @@ export async function getUserExercises(userId, filters) {
       queryParams.push(filters.limit);
     }
 
-    const query = `SELECT * FROM exercises WHERE ${clauses.where.join(
+    const query = `SELECT id, description, duration, date FROM exercises WHERE ${clauses.where.join(
       ' AND '
     )}${clauses.orderBy}${clauses.limit}`;
 

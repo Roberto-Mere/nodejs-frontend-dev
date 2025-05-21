@@ -22,7 +22,7 @@ describe('Exercise model', () => {
       await getUserExercises(userId, filters);
 
       expect(db.all).toHaveBeenCalledWith(
-        'SELECT * FROM exercises WHERE userId = ? AND date >= ? ORDER BY date',
+        'SELECT id, description, duration, date FROM exercises WHERE userId = ? AND date >= ? ORDER BY date',
         [userId, filters.from]
       );
     });
@@ -34,7 +34,7 @@ describe('Exercise model', () => {
       await getUserExercises(userId, filters);
 
       expect(db.all).toHaveBeenCalledWith(
-        'SELECT * FROM exercises WHERE userId = ? AND date >= ? AND date <= ? ORDER BY date LIMIT ?',
+        'SELECT id, description, duration, date FROM exercises WHERE userId = ? AND date >= ? AND date <= ? ORDER BY date LIMIT ?',
         [userId, filters.from, filters.to, filters.limit]
       );
 
@@ -43,7 +43,7 @@ describe('Exercise model', () => {
       await getUserExercises(userId, filters);
 
       expect(db.all).toHaveBeenCalledWith(
-        'SELECT * FROM exercises WHERE userId = ?',
+        'SELECT id, description, duration, date FROM exercises WHERE userId = ?',
         [userId, filters.from, filters.to, filters.limit]
       );
     });
