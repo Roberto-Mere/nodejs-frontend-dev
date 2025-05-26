@@ -14,6 +14,6 @@ const router = Router();
 router.get('/', getUsers);
 router.post('/', validateUser, validateRequest, postUser);
 router.get('/:id/logs', validateLogs, validateRequest, getUserLogs);
-router.post('/:id/exercise', validateExercise, validateRequest, postExercise);
+router.post('/:id/exercises', validateExercise, validateRequest, postExercise);
 
 export default router;
