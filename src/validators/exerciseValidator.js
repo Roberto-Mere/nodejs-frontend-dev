@@ -22,6 +22,19 @@ export const validateExercise = [
     .withMessage('Date must be a string')
     .matches(/^\d{4}-\d{2}-\d{2}$/)
     .withMessage('Date must be in YYYY-MM-DD format')
-    .isISO8601()
-    .withMessage('Date must be a valid date'),
+    .custom((value) => {
+      const [year, month, day] = value.split('-').map(Number);
+      const date = new Date(value);
+
+      if (
+        isNaN(date.getTime()) ||
+        date.getUTCFullYear() !== year ||
+        date.getUTCMonth() + 1 !== month ||
+        date.getUTCDate() !== day
+      ) {
+        throw new Error('Date must be a valid calendar date');
+      }
+
+      return true;
+    }),
 ];
