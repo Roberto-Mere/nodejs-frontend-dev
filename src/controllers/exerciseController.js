@@ -26,8 +26,13 @@ export const getUserLogs = asyncHandler(async (req, res) => {
 export const postExercise = asyncHandler(async (req, res) => {
   const userId = +req.params.id;
   const today = new Date(Date.now()).toISOString().slice(0, 10);
-  const { description, duration: durationString, date = today } = req.body;
-  const duration = +durationString;
+  const {
+    description,
+    duration: enteredDuration,
+    date: enteredDate,
+  } = req.body;
+  const date = enteredDate ? enteredDate : today;
+  const duration = +enteredDuration;
 
   const user = await findUser('id', userId);
 
