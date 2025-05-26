@@ -18,7 +18,7 @@ export const getUserLogs = asyncHandler(async (req, res) => {
   }
 
   const userLogs = await getUserExercises(userId, filters);
-  const count = await getUserExerciseCount(userId);
+  const count = await getUserExerciseCount(userId, filters);
 
   res.status(200).json({ ...user, logs: userLogs, count });
 });

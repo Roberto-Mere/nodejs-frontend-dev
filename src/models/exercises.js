@@ -30,11 +30,20 @@ export async function getUserExercises(userId, filters) {
   }
 }
 
-export async function getUserExerciseCount(userId) {
+export async function getUserExerciseCount(userId, filters) {
   try {
+    const queryParams = [userId];
+    const isRange = filters.from && filters.to;
+
+    if (isRange) {
+      queryParams.push(filters.from, filters.to);
+    }
+
     const response = await db.get(
-      'SELECT COUNT(*) AS count FROM exercises WHERE userId = ?',
-      userId
+      `SELECT COUNT(*) AS count FROM exercises WHERE userId = ?${
+        isRange ? ' AND date >= ? AND date <= ?' : ''
+      }`,
+      queryParams
     );
 
     return response.count;
