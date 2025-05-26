@@ -2,6 +2,7 @@ import { body } from 'express-validator';
 
 export const validateUser = [
   body('username')
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage('Username is required')
     .isString()

@@ -2,6 +2,7 @@ import { body } from 'express-validator';
 
 export const validateExercise = [
   body('description')
+    .trim()
     .exists({ values: 'falsy' })
     .withMessage('Description is required')
     .isString()
@@ -9,12 +10,14 @@ export const validateExercise = [
     .isLength({ min: 5 })
     .withMessage('Description must be at least 5 characters long'),
   body('duration')
+    .trim()
     .exists({ values: 'falsy' })
     .withMessage('Duration is required')
     .isInt({ gt: 0 })
     .withMessage('Duration must be a number greater than 0'),
   body('date')
-    .optional()
+    .trim()
+    .optional({ values: 'falsy' })
     .isString()
     .withMessage('Date must be a string')
     .matches(/^\d{4}-\d{2}-\d{2}$/)
